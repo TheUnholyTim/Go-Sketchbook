@@ -89,7 +89,7 @@ func main() { //  all code that'll run must be inside the main function (which i
 	// fmt.Println()
 	// welcome("Tim")
 	// sum(32, 8)
-	// whoILove("Ieska", "")
+	// whoILove("girl", "")
 	// fmt.Println(sum(5, 7))
 	// a, b := swap(42, 8)
 	// fmt.Println(a, b)
