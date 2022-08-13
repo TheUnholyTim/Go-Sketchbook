@@ -234,14 +234,149 @@ func main() { //  all code that'll run must be inside the main function (which i
 	*? The code in main intiliazes a Timer and takes a number as input. Then it calls the tick() method for the Timer the given number of times.
 	*? Define the Timer Struct with two fields: id and value, and define the tick() method, which should increment the value by one and output its current value.
 	**/
-	var y int
-	fmt.Scanln(&y)
+	// var y int
+	// fmt.Scanln(&y)
 
-	t := Timer{"timer1", 0}
+	// t := Timer{"timer1", 0}
 
-	for i := 0; i < y; i++ {
-		t.tick(i)
-	}
+	// for i := 0; i < y; i++ {
+	// 	t.tick(i)
+	// }
+
+	/** Arrays! **/
+
+	// var a [5]int //Creating but not initiliazing the array (by default, the elements of the array are initilized to the zero value of the given type)
+	// a = {0, 2, 3, 4, 5} //This won´t work
+	// a[0] = 8 //This is how you populate an non initilized array
+	// a[1] = 42
+	// arr := [5]int{0, 2, 4, 6, 8} //creating and initializing the array
+	//? An Array has a fixed size. Which means that once declared, you cannot increase or decrease its size.
+	//? Luckily GO provides the *slice*, which is a dynamically-sized view into the elements of an array.
+	//? A slice is based on an array and is defined by specifying two indices, a low and high, separated by a clon:
+	// var s []int = arr[1:3] //This code selects the elements with index 1 to 3 from the a array, including the first given idnex, but excluding the last
+
+	// fmt.Println(arr, a[0])
+	// fmt.Println(s) // so, the slice s will now include the values [2,4]
+	/**
+	*?You can omit the low or the high bound. Omitting the low will take the value 0, while omitting the high, will take the arr lenght.
+	*? For example, arr[:3] will take the first 3 elements of the array
+	**/
+	//We can also access a slice value the same way we did with the common array:
+	// fmt.Println(s[1])
+	//And since the slice don't store any value, just describe a section of an underlying array, if you try to, you'll change the original array
+	// fmt.Println(arr[1]) // returns 2
+	// s[0] = 3
+	// fmt.Println(arr[1]) // returns 3
+	/**Now, Go provides a make() function to create slices. This is how you create dynamically-sized array.**/
+
+	// brr := make([]int, 5) //The make function creates an array of the given type and size, and returns a slice of that array
+	//after creating the slice, we can add append new elements to it using the append() function
+	// brr = append(brr, 8)
+	// fmt.Println(brr) // It'll return [0, 0, 0, 0, 0, 8] since it'll return the old slice + the new one
+	// x := make([]int, 2)
+	// x = append(x, 3, 6, 2)
+	// fmt.Println(x[4])                                          // It'll return 2
+	// fmt.Println(x)                                             // It'll return [0 0 3 6 2]
+	/** Range! **/
+	//? the range form of the for loop allows you to iterate over a slice:
+
+	// a := make([]int, 5)
+	// a[1] = 2
+	// a[2] = 3
+
+	// for i, v := range a {
+	// 	fmt.Println(i, v) // it'll return the index and the value stored inside.
+	//So...it'll return 0 0, 1 2, 2 3, 3 0, 4 0
+	// }
+	//? Now, sometimes you'll want only the value, in that case, skip the index using an underscore
+	// for _, v := range a {
+	// 	fmt.Println(v)
+	// }
+	// The range can also be used to iterate over the charactersof a string.
+	// x := "Hi, mom"
+	// for _, c := range x {
+	// 	fmt.Println(c) //Prints unicode code points of the character.
+	// }
+	// fmt.Println("")
+	// for _, c := range x {
+	// 	fmt.Printf("%c \n", c) //Prints the character.
+	// }
+	// res := 0
+	// nums := [3]int{2, 4, 6}
+
+	// for i, v := range nums {
+	// 	if i%2 == 0 {
+	// 		res += v
+	// 	}
+	// }
+	// fmt.Println(res)
+	/** MAP MAP MAP MAP MAP MAP MAAAAAAAAAAAAN **/
+	//m := make(map[string]int)
+	// We can create a map using the make() function, similar to arrays.
+	//Maps are used to store key:value pairs, the key is always unique
+	// m["James"] = 42
+	// m["Amy"] = 24
+
+	// fmt.Println(m["James"])
+	/* We can also use this syntax to define a map */
+	// m := map[string]int{
+	// 	"James": 42,
+	// 	"Amy":   24}
+	// fmt.Println(m["Amy"])
+	// we can use delete to remove an element from the map!
+	// delete(m, "Amy")
+	//to assign a new element to the map do this:
+	// m["Tim"] = 23
+	//? Maps are printed in the form map[key:value key:value] when output with fmt.Println().
+	// m := map[int]int{
+	// 	8: 42,
+	// 	2: 6,
+	// 	4: 9,
+	// 	5: 3}
+	// delete(m, 2)
+	// fmt.Println(m[4] - m[5])                                   // it'll return  6
+	/** Variadic Functions **/
+	//? Variadic functions are the ones that can be called with any number of arguments, like Println
+	// neoSum(3, 4, 5, 1, 2, 12)
+	// neoSum(2, 2)
+	// neoSum(-2, 5)
+
+	// v := []int{8, 5, 3}
+	// f(v...)
+
+	// s := []int{1, 2, 4, 6, 8}
+	// s[2] = s[1]
+	// s[3] = s[2] + s[0]
+	// fmt.Println(s[4] % s[3])
+
+	/** Match Results **/
+	/*
+		? You are making a program to analyze sport match results and calculate the points of the given team.
+		? the match results are stored in an Array called results.
+		? Each match has one of the following results:
+		*? "w" - won
+		*? "l" - lost
+		*? "d" - draw
+
+		? A win adds *three* points, a draw adds one and a lost match does not add any points.
+		? Your program needs to take the last match results as input and append it to the results array.
+		? After that, calculate and output the total points the team gained from the results.
+	*/
+
+	// results := []string{"w", "l", "w", "d", "w", "l", "l", "l", "d", "d", "w", "l", "w", "d"}
+
+	// var i string
+	// fmt.Scanln(&i)
+	// results = append(results, i)
+
+	// matchResults(results)
+
+	/* Concurrency :
+	? Concurrency means multiple computations are happening at the same time.
+	? It is used when your program has multiple things to do.
+	*Concurrency is about creating multiple processes excecuting independently.
+	? In order to use concurrency, the program is broken into parts, which are then executed separately.
+	*/
 
 	fmt.Println("Uncomment my code to see what it does, duh!") //strings must be encapsulated by ' " ' like C language.
 	// fmt.Println((2022 - 1990) > (2050 - 2022)) // This returns true.
@@ -334,6 +469,39 @@ func (t *Timer) tick(value int) {
 		t.value = i + 1
 	}
 	fmt.Println(t.value)
+}
+
+/** Variadic Functions **/
+
+func neoSum(nums ...int) {
+	total := 0
+	for _, v := range nums {
+		total += v
+	}
+	fmt.Println(total)
+}
+
+func f(v ...int) {
+	res := 20
+	for _, a := range v {
+		res -= a
+	}
+	fmt.Println(res)
+}
+
+func matchResults(matches []string) {
+	res := 0
+	for _, v := range matches {
+		switch v {
+		case "w":
+			res += 3
+		case "d":
+			res += 1
+		default:
+			res += 0
+		}
+	}
+	fmt.Println(res)
 }
 
 /* Structs */
