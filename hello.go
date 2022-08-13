@@ -303,13 +303,6 @@ func change_ptr(ptr *int) {
 func zero(x *int) {
 	*x = 0
 }
-func brigar(brigando bool) bool {
-	if brigando == true {
-		return true
-	} else {
-		return false
-	}
-}
 
 func (greet Girlfriend) greeting() {
 	fmt.Println("Ohayo, da-arling!")
