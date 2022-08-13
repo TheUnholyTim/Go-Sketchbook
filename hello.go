@@ -210,7 +210,7 @@ func main() { //  all code that'll run must be inside the main function (which i
 
 	//Go to line 294 to see a method, since they can only be declared outside a function...since functions can't be nested inside other functions
 	//? After defining the method, we can call it on our struct using the dot syntax, like this:
-	// x := Girlfriend{"Ieska", 19, "taken"}
+	// x := Girlfriend{"girl", 19, "taken"}
 	//x.greeting()
 	//welcome(x)
 
