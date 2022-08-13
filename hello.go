@@ -210,16 +210,38 @@ func main() { //  all code that'll run must be inside the main function (which i
 
 	//Go to line 294 to see a method, since they can only be declared outside a function...since functions can't be nested inside other functions
 	//? After defining the method, we can call it on our struct using the dot syntax, like this:
-	x := Girlfriend{"Ieska", 19, "taken"}
+	// x := Girlfriend{"Ieska", 19, "taken"}
 	//x.greeting()
 	//welcome(x)
 
 	/**
 	*? In case we need to change the data of the struct in a method, we can use...POINTERS as method receivers! ?>
 	**/
-	fmt.Println(x.age)
-	x.increase(2)
-	fmt.Println(x.age)
+	//fmt.Println(x.age)
+	//x.increase(2)
+	//fmt.Println(x.age)
+
+	/** Created a withdraw method to withdraw cash from Bank Account. **/
+	//timAcc := BankAccount{"Tim Kramer", 32000.00, 0.0}
+	//timAcc.withdraw(1000.50)
+	//fmt.Println()
+	/* Also! Formating strings in GO is EXACTLY THE SAME as in C language. */
+	//fmt.Printf("Current value in your account is: %f. \n Last value withdrawn from it was: %f\n", timAcc.storedMoney, timAcc.lastTransaction)
+
+	/** Ticking Timer Challenge!
+	*? Build a Timer app that should count up to a given number.
+	*? Your Program needs to take a number as input and make the TIMER tick that number of times.
+	*? The code in main intiliazes a Timer and takes a number as input. Then it calls the tick() method for the Timer the given number of times.
+	*? Define the Timer Struct with two fields: id and value, and define the tick() method, which should increment the value by one and output its current value.
+	**/
+	var y int
+	fmt.Scanln(&y)
+
+	t := Timer{"timer1", 0}
+
+	for i := 0; i < y; i++ {
+		t.tick(i)
+	}
 
 	fmt.Println("Uncomment my code to see what it does, duh!") //strings must be encapsulated by ' " ' like C language.
 	// fmt.Println((2022 - 1990) > (2050 - 2022)) // This returns true.
@@ -308,6 +330,19 @@ func (ptr *Girlfriend) increase(val int) {
 	ptr.age += val
 }
 
+func (ptr *BankAccount) withdraw(val float32) {
+	ptr.lastTransaction = -val
+	ptr.storedMoney -= val
+
+}
+
+func (t *Timer) tick(value int) {
+	for i := 0; i <= value; i++ {
+		t.value = i + 1
+	}
+	fmt.Println(t.value)
+}
+
 /* Structs */
 
 //? Structs can also be created outisde functions (like the main function) || You should always create them outside the main function!
@@ -316,4 +351,15 @@ type Girlfriend struct {
 	name   string
 	age    int
 	status string
+}
+
+type BankAccount struct {
+	name            string
+	storedMoney     float32
+	lastTransaction float32
+}
+
+type Timer struct {
+	id    string
+	value int
 }
