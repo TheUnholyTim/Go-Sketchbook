@@ -2,6 +2,7 @@ package main // Every GO program is made of packages, so we define the main code
 
 import (
 	"fmt" //fmt stands for format, it allows you to use inputs and outputs of values.
+	"time"
 )
 
 func main() { //  all code that'll run must be inside the main function (which is declared with the reserved word func)
@@ -372,14 +373,114 @@ func main() { //  all code that'll run must be inside the main function (which i
 	// matchResults(results)
 
 	/* Concurrency :
-	? Concurrency means multiple computations are happening at the same time.
-	? It is used when your program has multiple things to do.
+	?> Concurrency means multiple computations are happening at the same time.
+	?> It is used when your program has multiple things to do.
 	*Concurrency is about creating multiple processes excecuting independently.
-	? In order to use concurrency, the program is broken into parts, which are then executed separately.
+	?> In order to use concurrency, the program is broken into parts, which are then executed separately.
 	*/
+	//?> To achieve this, GO provides Goroutines. It is pretty much like a cpu thread to accomplish multiple taks, but it consumes way less
+	//?> resources than a normal cpu thread created by the OS.
+	// out(0, 5)
+	// out(6, 10)
+	/**
+	the out() function simply outputs numbers in the given range. We use a time.Sleep() to emulate work being done between outputs
+	It simply waits for the provided time (50ms) before continuindo each iteration
+	Now! If we call the function in main two times, the first call will execute first follow by the second call.
+	This will generate the output of 0 to 5, then 6 to 10
+	*/
+	//?> This is called a sequential program, as the statements are executed one after the other. The first call needs to be complete
+	//?> before the second call starts.
 
-	fmt.Println("Uncomment my code to see what it does, duh!") //strings must be encapsulated by ' " ' like C language.
+	//?> When running concurrent programs, do not often want to wait for one task to finish before starting a new one.
+	//?> To achieve concurrency, let's start the function calls as Goroutines, using the go keyword:
+	// go out(0, 5)
+	// go out(6, 10)
+
+	/**
+
+
+	//if you run that part of the program, you'll notice something amazing about the outputs! (there's no output.) but...why?
+	//?> The output happens like that because the main() function exits before the Goroutines complete.
+	//*Our program has 3 virtual threads, the 2 function call and a main(). Our 2 funcs get executed concurrently, and main() doest not wait
+	//* for them to finish.
+														//	Channels
+	//?> a channel is like a pipe, allowing you to send and receive data from goroutines, and enbaling them to communicate and synchronize.
+	**/
+	//?> To use a channel, we first need to make one using the make() function:
+	//ch := make(chan int) // The type after the *chan* keyword indicates the type of the data we'll send through the channel.
+	//ch <- 8              // We can send data to the channel using this syntax.
+	//* Similarly, we can receive data from the channel using the following syntax:
+	//value := <-ch
+	//* and if we do not need the value as a variable, we can simply use:
+	//<-ch //* data flows in the direction of the arrow.
+	//* Now we can even use our out function without the time.Sleep in main()
+
+	// ch := make(chan bool)
+
+	// go out(0, 5, ch)
+	// go out(6, 10, ch)
+	// <-ch
+
+	//* The receive operation blocks the code until and unless some data is sent by the send operation.
+	//* If nodata is receive, a deadlock will occur, blocking the code from executing.
+	//* Now we'll send data from a function to the main function through the channel
+	// evenCh := make(chan int)
+	// sqCh := make(chan int)
+
+	// go evenSum(0, 100, evenCh)
+	// go squareSum(0, 100, sqCh)
+
+	// fmt.Println(<-evenCh + <-sqCh) //* If you do not need to send data to a channel anymore, you can close it using close(ch)
+	//*Where ch is the name of the channel. This is done in the sender.
+
+	/** Select **/
+	//?> The select statement is used to wait on multiple channel operations
+	//* The syntax is similar to switch except that each of the case statements will be a channel operation.
+
+	// evenCh := make(chan int)
+	// sqCh := make(chan int)
+
+	// go evenSum(0, 100, evenCh)
+	// go squareSum(0, 100, sqCh)
+
+	// select {
+	// case x := <-evenCh:
+	// 	fmt.Println(x)
+	// case y := <-sqCh:
+	// 	fmt.Println(y)
+	// }
+	/**image.png
+	**Combining goroutines and channels with select is a powerful feature of Go. Imagine a program that needs to execute some code whenever
+	**one of the concurrent operations completes -- this can be achieved using select.
+	**/
+	//?> a select can have a default case, which will execute when no channel is ready. For example, we could have an infinite for loop,
+	//?> waiting for one of the channels to receive data:
+	// for {
+	// 	select {
+	// 	case x := <-evenCh:
+	// 		fmt.Println(x)
+	// 		return
+	// 	case y := <-sqCh:
+	// 		fmt.Println(y)
+	// 		return
+	// 	default:
+	// 		fmt.Println("Nothing avaiable")
+	// 		time.Sleep(50 * time.Millisecond)
+
+	// 	}
+	// }
+	/**
+	**A select statement blocks until at least one of its cases can procced.
+	** The default case is useful in preventing deadlocks -- without it the select would wait for a channel forever, crashing the program
+	** if none of the channels received data.
+	**/
+	ch := make(chan int)
+	go chTest(ch)
+	fmt.Println(<-ch / 2)
+	fmt.Println("Uncomment my code to see what it does, duh! (NOT AT ONCE, PLEASE, IT'LL CONFLICT ALL THE WAY DOWN)") //strings must be encapsulated by ' " ' like C language.
 	// fmt.Println((2022 - 1990) > (2050 - 2022)) // This returns true.
+
+	// time.Sleep(500 * time.Millisecond) //Using this to observe that each coroutine worked independent and concurrently.
 }
 
 /*Functions and stuff */
@@ -469,6 +570,38 @@ func (t *Timer) tick(value int) {
 		t.value = i + 1
 	}
 	fmt.Println(t.value)
+}
+
+func out(from, to int, ch chan bool) {
+	for i := from; i <= to; i++ {
+		time.Sleep(50 * time.Millisecond)
+		fmt.Println(i)
+	}
+	ch <- true
+}
+
+func evenSum(from, to int, ch chan int) {
+	result := 0
+	for i := from; i <= to; i++ {
+		if i%2 == 0 {
+			result += i
+		}
+	}
+	ch <- result
+}
+
+func squareSum(from, to int, ch chan int) {
+	result := 0
+	for i := from; i <= to; i++ {
+		if i%2 == 0 {
+			result += i * i
+		}
+		ch <- result
+	}
+}
+
+func chTest(ch chan int) {
+	ch <- 4
 }
 
 /** Variadic Functions **/
